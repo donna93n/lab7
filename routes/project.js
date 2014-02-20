@@ -6,7 +6,7 @@ exports.projectInfo = function(req, res) { 
   // query for the specific project and
   // call the following callback
 
-  models.Project.find().exec(afterQuery);
+  models.Project.find({"_id": projectID}).exec(afterQuery);
 
   function afterQuery(err, projects) {
     if(err) console.log(err);
@@ -22,7 +22,7 @@ exports.addProject = function(req, res) {
   // YOU MUST send an OK response w/ res.send();
   var newPost = new models.Project({
   	"title": form_data.project_title,
-      	"date": form_data.date,
+      	"date": new Date(form_data.date),
       	"summary": form_data.summary,
       	"image": form_data.image_url
   });
@@ -30,11 +30,13 @@ exports.addProject = function(req, res) {
   newPost.save(afterSave);
 
   function afterSave(err){
-	if (err){
+  	if (err){
 		console.log(err);
 	}
-	res.send(500);
+	res.send();
 	res.redirect("/");
+  
+  
   }
 }
 
@@ -46,8 +48,9 @@ exports.deleteProject = function(req, res) {
   models.Project.find({"_id": projectID}).remove().exec(afterDelete);
 
   function afterDelete(err){
-	if(err){console.log(err);}
-
-	res.send(500);
+	if(err){
+		console.log(err);
+	}
+	res.send();
   }
 }
